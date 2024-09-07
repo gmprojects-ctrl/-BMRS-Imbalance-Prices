@@ -94,12 +94,49 @@ def format_bmrs_data(data:Dict) -> pd.DataFrame:
 
 # get the data
 def get_bmrs_data(date:str) -> pd.DataFrame:
+    '''
+    Title: get_bmrs_data
+    Description: This function gets the data for a specific date
+    Arguments:
+        - date: str - The date to get the data for
+    Returns:
+        - pd.DataFrame - The data for the specific date
+    '''
+
+
+    # Need to get the previous day and the next day data as well because of overflow 
+    # i.e The data for 00:00 is in the next day data
+
+    # Get the previous day data
+    previous_day = pd.to_datetime(date) - pd.Timedelta(days=1)
+    
+    # Get the next day data
+    next_day = pd.to_datetime(date) + pd.Timedelta(days=1)
+    
+    # Convert to string
+    previous_day = previous_day.strftime("%Y-%m-%d")
+    next_day = next_day.strftime("%Y-%m-%d")
+    
     
     # Get the raw data
-    raw_data = get_bmrs_raw_data(date)
+    raw_data_current = get_bmrs_raw_data(date)
+    raw_data_previous = get_bmrs_raw_data(previous_day)
+    raw_data_next = get_bmrs_raw_data(next_day)
+    
+    
     
     # Format the data
-    formatted_data = format_bmrs_data(raw_data)
+    formatted_data_current = format_bmrs_data(raw_data_current)
+    formatted_data_previous = format_bmrs_data(raw_data_previous)
+    formatted_data_next = format_bmrs_data(raw_data_next)
+    
+    # Concatenate the data
+    formatted_data = pd.concat([formatted_data_previous, formatted_data_current, formatted_data_next])
+    
+    # Select only the data for the current day
+    formatted_data = formatted_data[formatted_data["startTime"].dt.strftime("%Y-%m-%d") == date]
+    
+    
     
     # Return the data
     return formatted_data
@@ -119,10 +156,11 @@ def get_bmrs_data_range(start_date:str, end_date:str) -> pd.DataFrame:
     date_range = pd.date_range(start=start_date, end=end_date, freq="D").strftime("%Y-%m-%d")
     
     
-    # Check if the length is not greater than 100 days
-    if len(date_range) > 100:
+    # Check if the length is not greater than 30 days to avoid rate limiting
+    if len(date_range) > 30:
         LOGGER.error("The date range is too large")
         return pd.DataFrame()
+    
     
     
     # Create a concat object
