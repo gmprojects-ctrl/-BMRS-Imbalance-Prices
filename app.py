@@ -10,18 +10,6 @@ import plotly.subplots as sp
 from utils.bmrs_data import get_bmrs_data
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 # Main function
 def main():
     # Ensure the page is wide 
