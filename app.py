@@ -64,12 +64,15 @@ def main():
     
     # Create hourly balances
     hourly_data = data[['ABSnetImbalanceVolume']].groupby(by=[data['startTime'].dt.hour]).sum().reset_index()
+   
     
     # Sort values of hourly data by ABSnetImbalanceVolume
     hourly_data = hourly_data.sort_values(by=['ABSnetImbalanceVolume'])
+   
+ 
     
     # Get the hightest hour
-    highest_hour = hourly_data.tail()['startTime'].values[0]
+    highest_hour = hourly_data.iloc[-1,:]['startTime']
     
 
     
@@ -90,7 +93,7 @@ def main():
     st.write(f"The unit rate is: {unit_rate:.2f}")
     
     # Write the hour with the highest imbalance volume
-    st.write(f"The hour with the highest imbalance volume is: {highest_hour:02}:00")
+    st.write(f"The hour with the highest imbalance volume is: {int(highest_hour):02}:00")
         
     # Write the data
     st.write(data)
