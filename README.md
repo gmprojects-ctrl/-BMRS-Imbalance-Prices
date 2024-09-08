@@ -18,7 +18,7 @@ Project for a certain company
 
 1.) Create a virtual environment in Python and install the requirements.txt
 
-2.) In the virtual environment and inside the folder rune
+2.) In the virtual environment and inside the folder run
 
 ```sh
 
