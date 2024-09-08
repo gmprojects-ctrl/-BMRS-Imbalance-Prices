@@ -14,6 +14,17 @@ Project for a certain company
 [X] - Extra analysis or plotting will be appreciated.
 
 
+### TO RUN
+
+1.) Create a virtual environment in Python and install the requirements.txt
+
+2.) In the virtual environment and inside the folder rune
+
+```sh
+
+python -m streamlit run app.py
+```
+
 ### Sources
 https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/settlement/system-prices/%7BsettlementDate%7D
 
