@@ -40,7 +40,7 @@ class TestBMRSData(unittest.TestCase):
         self.assertIsInstance(data,pd.DataFrame)
         
         # Check the shape of the data
-        self.assertGreater(data.shape[0],0)
+        self.assertFalse(data.empty)
         
         # Check the columns
         self.assertIn("startTime",data.columns)
@@ -53,7 +53,7 @@ class TestBMRSData(unittest.TestCase):
         self.assertEqual(data["systemBuyPrice"].dtype,np.float64)
         
         # Create a date index
-        date_index = pd.date_range(start="2020-01-01 00:00:00",end="2020-01-05 23:30:00",freq="30T")
+        date_index = pd.date_range(start="2020-01-01 00:00:00",end="2020-01-05 23:30:00",freq="30min")
         
     
         
