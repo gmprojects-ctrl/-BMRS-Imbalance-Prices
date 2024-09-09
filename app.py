@@ -10,6 +10,7 @@ import plotly.subplots as sp
 from utils.bmrs_data import get_bmrs_data
 
 
+
 # Main function
 def main():
     # Ensure the page is wide 
@@ -75,7 +76,7 @@ def main():
     unit_rate = total_daily_costs / total_daily_volume
     
     # Write the total daily costs
-    st.write(f"The total daily costs are: {total_daily_costs:.2f}")
+    st.write(f"The total daily costs are: {total_daily_costs:,.2f}")
     
     # Write the total daily volume
     st.write(f"The unit rate is: {unit_rate:.2f}")

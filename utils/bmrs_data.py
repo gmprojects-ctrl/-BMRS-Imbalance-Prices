@@ -21,7 +21,7 @@ LOGGER.addHandler(FILE_HANDLER)
 STREAM_HANDLER = logging.StreamHandler()
 STREAM_HANDLER.setFormatter(FORMATTER)
 LOGGER.addHandler(STREAM_HANDLER)
-FILE_HANDLER.setLevel(logging.INFO)
+FILE_HANDLER.setLevel(logging.DEBUG)
 
 
 # Main request function 
@@ -40,15 +40,18 @@ def get_bmrs_raw_data(date:str) -> Dict:
     # Handle the request
     try:
         response = requests.get(direct_request, timeout=DEFAULT_TIMEOUT)
+        # Raise any errors
         response.raise_for_status()
+        # Log any sucesses
+        LOGGER.debug("Retrieved Raw Data for %s",date)
     except requests.exceptions.HTTPError as http_err:
-        LOGGER.error(f'HTTP error occurred: {http_err}')
+        LOGGER.error('HTTP error occurred: %s',http_err)
         return {}
     except requests.exceptions.ConnectionError as conn_err:
-        LOGGER.error(f'Connection error occurred: {conn_err}')
+        LOGGER.error('Connection error occurred: %s',conn_err)
         return {}
     except requests.exceptions.Timeout as time_err:
-        LOGGER.error(f'Timeout error occurred: {time_err}')
+        LOGGER.error(f'Timeout error occurred: %s',time_err)
         return {}
     
     # Return the response
@@ -136,7 +139,11 @@ def get_bmrs_data(date:str) -> pd.DataFrame:
     # Select only the data for the current day
     formatted_data = formatted_data[formatted_data["startTime"].dt.strftime("%Y-%m-%d") == date]
     
-    
+    # Log the data
+    if formatted_data.empty:
+        LOGGER.error("No data was found for the date %s",date)
+    else:
+        LOGGER.info("Data was found for the date %s",date)
     
     # Return the data
     return formatted_data
@@ -176,6 +183,12 @@ def get_bmrs_data_range(start_date:str, end_date:str) -> pd.DataFrame:
     
     # Concatenate the data
     output_df = pd.concat(concat)
+    
+    # Log the data
+    if output_df.empty:
+        LOGGER.error("No data was found between the dates %s and %s",start_date,end_date)
+    else:
+        LOGGER.info("Data was found between the dates %s and %s",start_date,end_date)
     
     # Return the data
     return output_df
