@@ -52,7 +52,7 @@ def main():
     data['Costs'] = data.apply(cost_create,axis=1)  
     
     # Create hourly balances
-    hourly_data = data[['ABSnetImbalanceVolume']].groupby(by=[data['startTime'].dt.hour]).sum().reset_index()
+    hourly_data = data[['ABSnetImbalanceVolume','Costs']].groupby(by=[data['startTime'].dt.hour]).sum().reset_index()
    
     
     # Sort values of hourly data by ABSnetImbalanceVolume
@@ -61,10 +61,44 @@ def main():
  
     
     # Get the hightest hour
-    highest_hour = hourly_data.iloc[-1,:]['startTime']
+    highest_hour_volume = hourly_data.iloc[-1,:]['startTime']
+    
+    # Get the most expensive hour
+    hourly_data = hourly_data.sort_values(by=["Costs"])
+    highest_hour_cost = hourly_data.iloc[-1,:]['startTime']
+    cost_highest_hour = hourly_data.iloc[-1,:]['Costs']
+    
+    
+    
+    
+    
+    # Peak min mean max buy price
+    peak_buy_price = data['systemBuyPrice'].max()
+    peak_buy_price_time = pd.to_datetime(data[data['systemBuyPrice'] == peak_buy_price]['startTime'].values[0]).strftime("%Y-%m-%d %H:%M:%S")
+    
+    min_buy_price = data['systemBuyPrice'].min()
+    min_buy_price_time = pd.to_datetime(data[data['systemBuyPrice'] == min_buy_price]['startTime'].values[0]).strftime("%Y-%m-%d %H:%M:%S")
+    
+    mean_buy_price = data['systemBuyPrice'].mean()
+    
+    # Peak min mean max sell price
+    peak_sell_price = data['systemSellPrice'].max()
+    peak_sell_price_time = pd.to_datetime(data[data['systemSellPrice'] == peak_sell_price]['startTime'].values[0]).strftime("%Y-%m-%d %H:%M:%S")
+    
+    min_sell_price = data['systemSellPrice'].min()
+    min_sell_price_time = pd.to_datetime(data[data['systemSellPrice'] == min_sell_price]['startTime'].values[0]).strftime("%Y-%m-%d %H:%M:%S")  
+    mean_sell_price = data['systemSellPrice'].mean()
+    
+    # Peak min mean max imbalance volume
+    peak_imbalance_volume = data['netImbalanceVolume'].max()
+    peak_imbalance_volume_time = pd.to_datetime(data[data['netImbalanceVolume'] == peak_imbalance_volume]['startTime'].values[0]).strftime("%Y-%m-%d %H:%M:%S")
+    
+    min_imbalance_volume = data['netImbalanceVolume'].min()
+    min_imbalance_volume_time = pd.to_datetime(data[data['netImbalanceVolume'] == min_imbalance_volume]['startTime'].values[0]).strftime("%Y-%m-%d %H:%M:%S") 
+    
+    mean_imbalance_volume = data['netImbalanceVolume'].mean()
     
 
-    
     
     # Get total daily costs
     total_daily_costs =  data['Costs'].sum()
@@ -75,6 +109,9 @@ def main():
     # Get the unit rate
     unit_rate = total_daily_costs / total_daily_volume
     
+    # Divide the page
+    st.divider()
+    
     # Write the total daily costs
     st.write(f"The total daily costs are: {total_daily_costs:,.2f}")
     
@@ -82,7 +119,38 @@ def main():
     st.write(f"The unit rate is: {unit_rate:.2f}")
     
     # Write the hour with the highest imbalance volume
-    st.write(f"The hour with the highest imbalance volume is: {int(highest_hour):02}:00")
+    st.write(f"The hour with the highest imbalance volume is: {int(highest_hour_volume):02}:00")
+    
+    # Write the hour with the highest costs
+    st.write(f"The hour with the highest costs is: {int(highest_hour_cost):02}:00 with costs of {cost_highest_hour:,.2f}")
+    
+    # Divide the page
+    tabs = st.tabs(["Buy Price","Sell Price","Imbalance Volume"])
+   
+    # Buy price tab
+    with tabs[0]:
+        # Write the peak buy price min buy price and mean buy price
+        st.write(f"The peak buy price is: {peak_buy_price:.2f} at {peak_buy_price_time}")
+        st.write(f"The min buy price is: {min_buy_price:.2f} at {min_buy_price_time}")
+        st.write(f"The mean buy price is: {mean_buy_price:.2f}")
+    
+    
+    # Sell price tab
+    with tabs[1]:
+        # Write the peak sell price min sell price and mean sell price
+        st.write(f"The peak sell price is: {peak_sell_price:.2f} at {peak_sell_price_time}")
+        st.write(f"The min sell price is: {min_sell_price:.2f} at {min_sell_price_time}")
+        st.write(f"The mean sell price is: {mean_sell_price:.2f}")
+    
+    # Imbalance volume tab
+    with tabs[2]:
+        # Write the peak imbalance volume min imbalance volume and mean imbalance volume
+        st.write(f"The peak imbalance volume is: {peak_imbalance_volume:.2f} at {peak_imbalance_volume_time}")
+        st.write(f"The min imbalance volume is: {min_imbalance_volume:.2f} at {min_imbalance_volume_time}")
+        st.write(f"The mean imbalance volume is: {mean_imbalance_volume:.2f}")
+    
+    # Divide the page
+    st.divider()
         
     # Write the data
     st.write(data)
@@ -123,6 +191,9 @@ def main():
     
     # Show the plot
     st.plotly_chart(fig)
+    
+    
+    
 # Run the main function
 if __name__ == "__main__":
     main()
