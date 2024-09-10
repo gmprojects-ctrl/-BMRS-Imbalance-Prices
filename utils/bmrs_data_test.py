@@ -13,6 +13,11 @@ import bmrs_data
 class TestBMRSData(unittest.TestCase):
     
     def test_get_bmrs_data(self):
+        '''
+        Title: Test get_bmrs_data function
+        Description: Test the get_bmrs_data function
+        '''
+        
         # Test the function
         data = bmrs_data.get_bmrs_data("2020-01-01")
         
@@ -33,8 +38,12 @@ class TestBMRSData(unittest.TestCase):
         self.assertEqual(data["systemBuyPrice"].dtype,np.float64)
         
     def test_get_bmrs_data_range(self):
+        '''
+        Title: Test get_bmrs_data_range function
+        Description: Test the get_bmrs_data_range function
+        '''
         # Test the function
-        data = bmrs_data.get_bmrs_data_range("2020-01-01","2020-01-05")
+        data = bmrs_data.get_bmrs_data_range("2020-01-01","2020-01-15")
         
         # Check the type of the data
         self.assertIsInstance(data,pd.DataFrame)
@@ -53,7 +62,7 @@ class TestBMRSData(unittest.TestCase):
         self.assertEqual(data["systemBuyPrice"].dtype,np.float64)
         
         # Create a date index
-        date_index = pd.date_range(start="2020-01-01 00:00:00",end="2020-01-05 23:30:00",freq="30min")
+        date_index = pd.date_range(start="2020-01-01 00:00:00",end="2020-01-15 23:30:00",freq="30min")
         
     
         

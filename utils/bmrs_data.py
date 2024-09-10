@@ -8,8 +8,10 @@ import logging
 
 
 # CONTANTS
+# API link
 API_LINK = r"https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/"
-DEFAULT_TIMEOUT = 10
+# Default timeout] in seconds
+DEFAULT_TIMEOUT = 10 
 
 # Create a logger 
 LOGGER = logging.getLogger(__name__)
@@ -163,8 +165,8 @@ def get_bmrs_data_range(start_date:str, end_date:str) -> pd.DataFrame:
     date_range = pd.date_range(start=start_date, end=end_date, freq="D").strftime("%Y-%m-%d")
     
     
-    # Check if the length is not greater than 30 days to avoid rate limiting
-    if len(date_range) > 30:
+    # Check if the length is not greater than 400 days to avoid rate limiting
+    if len(date_range) > 400:
         LOGGER.error("The date range is too large")
         return pd.DataFrame()
     
