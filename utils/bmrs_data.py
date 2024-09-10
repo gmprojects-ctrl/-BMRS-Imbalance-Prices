@@ -17,9 +17,11 @@ DEFAULT_TIMEOUT = 10
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
 FORMATTER = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 FILE_HANDLER = logging.FileHandler('bmrs_data.log')
 FILE_HANDLER.setFormatter(FORMATTER)
 LOGGER.addHandler(FILE_HANDLER)
+
 STREAM_HANDLER = logging.StreamHandler()
 STREAM_HANDLER.setFormatter(FORMATTER)
 LOGGER.addHandler(STREAM_HANDLER)
